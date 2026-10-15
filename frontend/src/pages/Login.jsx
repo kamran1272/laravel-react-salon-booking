@@ -16,6 +16,11 @@ export default function Login() {
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const demoMode = import.meta.env.VITE_DEMO_MODE === 'true';
+  // VITE_LIVE_DEMO_HINT=true is set only for the public live-demo build (real
+  // backend). It surfaces the public demo credentials; the shipped product
+  // never shows this.
+  const liveDemoHint = import.meta.env.VITE_LIVE_DEMO_HINT === 'true';
+  const showDemoAccounts = demoMode || liveDemoHint;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -52,9 +57,11 @@ export default function Login() {
           <h1 className="text-2xl font-bold text-slate-900">Welcome back</h1>
           <p className="mt-1 text-sm text-slate-500">Sign in to manage your appointments</p>
 
-          {demoMode && (
+          {showDemoAccounts && (
             <p className="mt-3 rounded-lg bg-indigo-50 px-4 py-2 text-xs text-indigo-700">
-              Interactive preview — pick an account below or sign in manually. Data is simulated.
+              {demoMode
+                ? 'Interactive preview — pick an account below or sign in manually. Data is simulated.'
+                : 'Live demo — connected to a real backend. Pick an account below to explore.'}
             </p>
           )}
 
@@ -100,7 +107,7 @@ export default function Login() {
             </button>
           </form>
 
-          {demoMode && (
+          {showDemoAccounts && (
             <div className="mt-6 rounded-lg bg-slate-50 px-4 py-3">
               <p className="text-xs font-semibold text-slate-700">Demo accounts (password: password)</p>
               <div className="mt-2 flex flex-wrap gap-2">
