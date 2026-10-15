@@ -535,7 +535,7 @@ function userResource(u) {
 function authUser(config = {}) {
   const header = config.headers?.Authorization || config.headers?.authorization;
   let token = header && header.startsWith('Bearer ') ? header.slice(7) : null;
-  if (!token && typeof localStorage !== 'undefined') token = localStorage.getItem('saas_token');
+  if (!token && typeof localStorage !== 'undefined') token = localStorage.getItem('salon_token');
   if (!token) return null;
   const id = tokens[token];
   return USERS.find((u) => u.id === id) || null;

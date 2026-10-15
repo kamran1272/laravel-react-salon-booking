@@ -14,7 +14,7 @@ const client = isDemoMode() ? createDemoClient() : axios.create({
 if (!isDemoMode()) {
 // Attach the auth token on every request.
 client.interceptors.request.use((config) => {
-  const token = localStorage.getItem('saas_token');
+  const token = localStorage.getItem('salon_token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -29,8 +29,11 @@ client.interceptors.response.use(
     const status = error?.response?.status;
     const path = window.location.pathname;
     if (status === 401 && path !== '/login' && path !== '/register') {
-      localStorage.removeItem('saas_token');
-      window.location.href = '/login';
+      localStorage.removeItem('salon_token');
+      // Respect the Vite base (e.g. /laravel-react-salon-booking/demo) so the
+      // redirect lands on the app's login page, not the domain root.
+      const base = (import.meta.env.BASE_URL || '/').replace(/\/$/, '');
+      window.location.href = `${base}/login`;
     }
     return Promise.reject(error);
   }

@@ -5,12 +5,12 @@ const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(() => localStorage.getItem('saas_token'));
+  const [token, setToken] = useState(() => localStorage.getItem('salon_token'));
   const [loading, setLoading] = useState(true);
 
   // Restore the session on mount if a token is stored.
   useEffect(() => {
-    const stored = localStorage.getItem('saas_token');
+    const stored = localStorage.getItem('salon_token');
     if (!stored) {
       setLoading(false);
       return;
@@ -22,7 +22,7 @@ export function AuthProvider({ children }) {
         setToken(stored);
       })
       .catch(() => {
-        localStorage.removeItem('saas_token');
+        localStorage.removeItem('salon_token');
         setUser(null);
         setToken(null);
       })
@@ -31,7 +31,7 @@ export function AuthProvider({ children }) {
 
   const login = useCallback(async (email, password) => {
     const res = await client.post('/auth/login', { email, password });
-    localStorage.setItem('saas_token', res.data.token);
+    localStorage.setItem('salon_token', res.data.token);
     setToken(res.data.token);
     setUser(res.data.user);
     return res.data;
@@ -39,7 +39,7 @@ export function AuthProvider({ children }) {
 
   const register = useCallback(async ({ name, email, password, password_confirmation }) => {
     const res = await client.post('/auth/register', { name, email, password, password_confirmation });
-    localStorage.setItem('saas_token', res.data.token);
+    localStorage.setItem('salon_token', res.data.token);
     setToken(res.data.token);
     setUser(res.data.user);
     return res.data;
@@ -52,7 +52,7 @@ export function AuthProvider({ children }) {
     } catch {
       // Ignore — token is being discarded either way.
     }
-    localStorage.removeItem('saas_token');
+    localStorage.removeItem('salon_token');
     setToken(null);
     setUser(null);
   }, []);
